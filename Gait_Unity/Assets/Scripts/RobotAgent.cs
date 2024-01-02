@@ -37,11 +37,21 @@ public class RobotAgent : Agent
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         var continuousActionsOut = actionsOut.ContinuousActions;
-        
-        for (int i = 0;i < continuousActionsOut.Length;i++)
+        /*
+        if (Time.time > 1f)
         {
-            continuousActionsOut[i] = (Random.value * 2 - 1);
+            for (int i = 0; i < continuousActionsOut.Length; i++)
+            {
+                continuousActionsOut[i] = (Random.value * 2 - 1);
+            }
         }
-        Debug.Log("Heuristic; " + continuousActionsOut[0] + " " + continuousActionsOut[1] + " " + continuousActionsOut[2] + " ");
+        */
+        continuousActionsOut[0] = Input.GetAxis("Horizontal") * 3;
+        //Debug.Log();
+        continuousActionsOut[1] = Input.GetAxis("Vertical") * 3;
+        Debug.Log(continuousActionsOut[0] + " " + continuousActionsOut[1]);
+
+        //robotController.GetJointPosition(0);
+        //Debug.Log("Heuristic; " + continuousActionsOut[0] + " " + continuousActionsOut[1] + " " + continuousActionsOut[2] + " ");
     }
 }

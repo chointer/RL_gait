@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class RobotController : MonoBehaviour
@@ -34,7 +35,11 @@ public class RobotController : MonoBehaviour
         }
     }
 
-
+    public void GetJointPosition(int index)
+    {
+        ArticulationBody articulationBody = joints[index].robotPart.GetComponent<ArticulationBody>();
+        Debug.Log(articulationBody.jointPosition[0] * 180 / 3.1415);
+    }
     /*void FixedUpdate()
     {
         if (Time.time > 1f)
