@@ -17,30 +17,15 @@ public class ArticulationJointController : MonoBehaviour
     public void RotateAmount(float rotationAmount)
     {
         float torque = rotationAmount * rotationTorqueMax;
-        if (axisType == "x") 
-        {
-            articulation.AddRelativeTorque(new Vector3(torque, 0, 0));
-        }
-
-        else if (axisType == "y")
-        {
-            articulation.AddRelativeTorque(new Vector3(0, torque, 0));
-        }
-
-        else if (axisType == "z")
-        {
-            articulation.AddRelativeTorque(new Vector3(0, 0, torque));
-        }
-
-        else
-        {
-            Debug.Log("Invalid axisType; " + axisType);
-        }
+        if (axisType == "x") articulation.AddRelativeTorque(new Vector3(torque, 0, 0));
+        else if (axisType == "y") articulation.AddRelativeTorque(new Vector3(0, torque, 0));
+        else if (axisType == "z") articulation.AddRelativeTorque(new Vector3(0, 0, torque));
+        else Debug.Log("Invalid axisType; " + axisType);
     }
 
-    private void FixedUpdate()
+    /*private void FixedUpdate()
     {
         float val = Input.GetAxis(axisName);
         RotateAmount(val);
-    }
+    }*/
 }

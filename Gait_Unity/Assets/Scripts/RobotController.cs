@@ -5,16 +5,9 @@ using UnityEngine;
 
 public class RobotController : MonoBehaviour
 {
-    [System.Serializable]
-    public struct Joint 
-    {
-        public string inputAxis;
-        public GameObject robotPart;
-    }
-
-    public Joint[] joints;
-    public float strength = 5;
-    private ArticulationJointController[] jointControllerList;
+    public GameObject[] joints;
+    [HideInInspector]
+    public ArticulationJointController[] jointControllerList;
 
 
     private void Start()
@@ -22,7 +15,7 @@ public class RobotController : MonoBehaviour
         jointControllerList = new ArticulationJointController[joints.Length];
         for (int i = 0; i < joints.Length; i++)
         {
-            jointControllerList[i] = joints[i].robotPart.GetComponent<ArticulationJointController>();
+            jointControllerList[i] = joints[i].GetComponent<ArticulationJointController>();
         }
     }
 
@@ -31,33 +24,31 @@ public class RobotController : MonoBehaviour
     {
         for (int i = 0; i < joints.Length; i++)
         {
-            jointControllerList[i].RotateAmount(actionList[i] * strength);
+            jointControllerList[i].RotateAmount(actionList[i]);
         }
     }
 
-    public void GetJointPosition(int index)
+    public void GetJointPosition(int[] index)
     {
-        ArticulationBody articulationBody = joints[index].robotPart.GetComponent<ArticulationBody>();
-        Debug.Log(articulationBody.jointPosition[0] * 180 / 3.1415);
-    }
-    /*void FixedUpdate()
-    {
-        if (Time.time > 1f)
+        string message = "";
+        for (int i = 0; i < index.Length; i++)
         {
-            RotateAll(GenerateRandomActionList());
+            message += (int)(joints[index[i]].GetComponent<ArticulationBody>().jointPosition[0] * 180 / 3.1415);
+            message += " ";
         }
+        Debug.Log(message);
     }
 
-
-    public float[] GenerateRandomActionList()
+    public void GetJointAngularVelocity(int[] index)
     {
-        var randomActionList = new float[joints.Length];
-        for (int i = 0; i < joints.Length; i++)
+        string message = "";
+        for (int i = 0; i < index.Length; i++)
         {
-            randomActionList[i] = (Random.value * 2 - 1);
+            var angVel = joints[index[i]].GetComponent<ArticulationBody>().angularVelocity;
+            message += (angVel.magnitude.ToString("F2") + "; " + angVel[0].ToString("F2") + ", " + angVel[1].ToString("F2") + ", " + angVel[2].ToString("F2"));
+            message += " ";
         }
+        Debug.Log(message);
+    }
 
-        Debug.Log("GenerateRandomActionList; " + randomActionList[0] + " " + randomActionList[1] + " " + randomActionList[2] + " ");        
-        return randomActionList;
-    }*/
 }

@@ -8,11 +8,13 @@ using Unity.MLAgents.Sensors;
 public class RobotAgent : Agent
 {
     private RobotController robotController;
-    
+    private ArticulationBody rootArticulationBody;
+
     // Link RobotController component
     public override void Initialize()
     {
         robotController = gameObject.GetComponent<RobotController>();
+        rootArticulationBody = gameObject.GetComponent<ArticulationBody>();
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -36,22 +38,16 @@ public class RobotAgent : Agent
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
+        int[] indices = { 0 };
+        //robotController.GetJointPosition(indices);
+        robotController.GetJointAngularVelocity(indices);
+        //float[] a = rootArticulationBody.jointAcceleration;
+        
         var continuousActionsOut = actionsOut.ContinuousActions;
-        /*
-        if (Time.time > 1f)
-        {
-            for (int i = 0; i < continuousActionsOut.Length; i++)
-            {
-                continuousActionsOut[i] = (Random.value * 2 - 1);
-            }
-        }
-        */
-        continuousActionsOut[0] = Input.GetAxis("Horizontal") * 3;
-        //Debug.Log();
-        continuousActionsOut[1] = Input.GetAxis("Vertical") * 3;
-        Debug.Log(continuousActionsOut[0] + " " + continuousActionsOut[1]);
 
-        //robotController.GetJointPosition(0);
-        //Debug.Log("Heuristic; " + continuousActionsOut[0] + " " + continuousActionsOut[1] + " " + continuousActionsOut[2] + " ");
+        for (int i = 0; i < continuousActionsOut.Length; i++)
+        {
+            continuousActionsOut[i] = Input.GetAxis(robotController.jointControllerList[i].axisName);
+        }
     }
 }
