@@ -4,22 +4,43 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
+using System.Threading;
+using System;
 
 public class RobotAgent : Agent
 {
+    public GameObject ground;
+    private CollisionManager collisionManager;
     private RobotController robotController;
     private ArticulationBody rootArticulationBody;
-
+    
     // Link RobotController component
     public override void Initialize()
     {
         robotController = gameObject.GetComponent<RobotController>();
         rootArticulationBody = gameObject.GetComponent<ArticulationBody>();
+        collisionManager = ground.GetComponent<CollisionManager>();
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
-
+        for (int i = 0; i < robotController.joints.Length; i++)
+        {
+            ArticulationBody joint = robotController.joints[i].GetComponent<ArticulationBody>();
+            // 1. joint angles (12)
+            sensor.AddObservation(joint.jointPosition[0] / Mathf.PI);
+            // 2. joint angular velocity (12)
+            sensor.AddObservation(joint.angularVelocity.magnitude);
+        }
+        // 3. Collision status
+        bool[] statusBody = collisionManager.GetBodyStatus();
+        foreach (bool b in statusBody) 
+            sensor.AddObservation(b);
+        bool[] statusFoot = collisionManager.GetFootStatus();
+        foreach (bool b in statusFoot) 
+            sensor.AddObservation(b);
+        // 4. gravity in local for the root Object? or for all? (3?)
+        sensor.AddObservation(transform.InverseTransformDirection(Physics.gravity));
     }
 
     public override void OnActionReceived(ActionBuffers actions)
@@ -38,11 +59,10 @@ public class RobotAgent : Agent
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
-        int[] indices = { 0 };
-        //robotController.GetJointPosition(indices);
-        robotController.GetJointAngularVelocity(indices);
-        //float[] a = rootArticulationBody.jointAcceleration;
-        
+        Vector3 gravityInLocalSpace = transform.InverseTransformDirection(Physics.gravity);
+        //ArticulationReducedSpace driveForce = rootArticulationBody.driveForce;
+        //Debug.Log(driveForce.ToString());
+
         var continuousActionsOut = actionsOut.ContinuousActions;
 
         for (int i = 0; i < continuousActionsOut.Length; i++)

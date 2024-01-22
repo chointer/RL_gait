@@ -19,7 +19,6 @@ public class RobotController : MonoBehaviour
         }
     }
 
-
     public void RotateAll(float[] actionList)
     {
         for (int i = 0; i < joints.Length; i++)
@@ -27,28 +26,4 @@ public class RobotController : MonoBehaviour
             jointControllerList[i].RotateAmount(actionList[i]);
         }
     }
-
-    public void GetJointPosition(int[] index)
-    {
-        string message = "";
-        for (int i = 0; i < index.Length; i++)
-        {
-            message += (int)(joints[index[i]].GetComponent<ArticulationBody>().jointPosition[0] * 180 / 3.1415);
-            message += " ";
-        }
-        Debug.Log(message);
-    }
-
-    public void GetJointAngularVelocity(int[] index)
-    {
-        string message = "";
-        for (int i = 0; i < index.Length; i++)
-        {
-            var angVel = joints[index[i]].GetComponent<ArticulationBody>().angularVelocity;
-            message += (angVel.magnitude.ToString("F2") + "; " + angVel[0].ToString("F2") + ", " + angVel[1].ToString("F2") + ", " + angVel[2].ToString("F2"));
-            message += " ";
-        }
-        Debug.Log(message);
-    }
-
 }
