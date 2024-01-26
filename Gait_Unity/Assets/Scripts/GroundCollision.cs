@@ -14,10 +14,8 @@ using UnityEngine;
 */
 
 
-public class CollisionManager : MonoBehaviour
+public class GroundCollision : MonoBehaviour
 {
-    public GameObject robot;
-
     [HideInInspector]
     public int NofBodyContacts = 0;
     private int NofBody = 0;
@@ -31,12 +29,13 @@ public class CollisionManager : MonoBehaviour
 
     private void Start()
     {
-        FillDictionaries(robot.transform);
+        RobotAgent robotAgent = GameObject.FindObjectOfType<RobotAgent>();
+        FillInDictionaries(robotAgent.gameObject.transform);
         statusBody = new bool[NofBody];
         statusFoot = new bool[NofFoot];
     }
 
-    private void FillDictionaries(Transform parent)
+    private void FillInDictionaries(Transform parent)
     {
         if (parent.gameObject.CompareTag("Body"))
             dictTagIdx.Add(parent.gameObject.name, (parent.gameObject.tag, NofBody++));
@@ -48,7 +47,7 @@ public class CollisionManager : MonoBehaviour
         for (int i = 0; i < parent.childCount; i++)
         {
             Transform transform = parent.GetChild(i);
-            FillDictionaries(transform);
+            FillInDictionaries(transform);
         }
     }
 
